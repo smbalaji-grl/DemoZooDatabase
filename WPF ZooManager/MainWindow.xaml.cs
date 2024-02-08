@@ -40,8 +40,8 @@ namespace WPF_ZooManager
             try
             {
                 string showAllDisplay = "select * from Animal";
-                SqlDataAdapter adapter = new SqlDataAdapter(showAllDisplay,conn);
-                using(adapter)
+                SqlDataAdapter adapter = new SqlDataAdapter(showAllDisplay, conn);
+                using (adapter)
                 {
                     DataTable animalTable = new DataTable();
                     adapter.Fill(animalTable);
@@ -57,13 +57,6 @@ namespace WPF_ZooManager
             }
 
         }
-
-
-
-
-
-
-
         private void showZoos()
         {
             try
@@ -121,6 +114,27 @@ namespace WPF_ZooManager
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void DeleteZoo_button(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string deleteSpecificZoo = "delete  from Zoo where Id= @zoo_Id";
+                SqlCommand command = new SqlCommand(deleteSpecificZoo, conn);
+                conn.Open();
+                command.Parameters.AddWithValue("@zoo_ID", listZoos.SelectedValue);
+                command.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                conn.Close();
+                showZoos();
             }
         }
     }
