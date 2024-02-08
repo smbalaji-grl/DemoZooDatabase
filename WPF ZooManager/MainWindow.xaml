@@ -11,9 +11,12 @@
             <RowDefinition Height="83*"/>
             <RowDefinition Height="84*"/>
         </Grid.RowDefinitions>
-        <Label Content="Zoo List" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.609,5.641"/>
-        <ListBox Name="listZoos" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="17,41,550,167" Grid.RowSpan="2"/>
-
+        <Label Content="Zoo List" HorizontalAlignment="Left" Margin="3,11,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.609,5.641"/>
+        <ListBox x:Name="listZoos" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,42,580,214" Grid.RowSpan="2" SelectionChanged="listZoos_SelectionChanged_1"/>
+        <Label Content="Associate Animal List" HorizontalAlignment="Left" Margin="198,11,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.609,5.641"/>
+        <ListBox x:Name="ListassociatedAnimal"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="198,42,400,214" Grid.RowSpan="2"/>
+        <ListBox x:Name="ListassociatedAnimal_Copy"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="198,42,400,214" Grid.RowSpan="2" RenderTransformOrigin="0.489,0.502"/>
+        <ListBox x:Name="ListassociatedDisplayAnimal"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="414,25,184,122" Grid.RowSpan="2" RenderTransformOrigin="0.489,0.502"/>
 
     </Grid>
 </Window>

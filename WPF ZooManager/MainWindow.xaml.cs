@@ -31,8 +31,39 @@ namespace WPF_ZooManager
             string connectionString = ConfigurationManager.ConnectionStrings["WPF_ZooManager.Properties.Settings.DemoDBConnectionString"].ConnectionString;
             conn = new SqlConnection(connectionString);
             showZoos();
+            showAnimal();
 
         }
+
+        private void showAnimal()
+        {
+            try
+            {
+                string showAllDisplay = "select * from Animal";
+                SqlDataAdapter adapter = new SqlDataAdapter(showAllDisplay,conn);
+                using(adapter)
+                {
+                    DataTable animalTable = new DataTable();
+                    adapter.Fill(animalTable);
+                    ListassociatedDisplayAnimal.DisplayMemberPath = "Animal";
+                    ListassociatedDisplayAnimal.SelectedValue = "Id";
+                    ListassociatedDisplayAnimal.ItemsSource = animalTable.DefaultView;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+
+        }
+
+
+
+
+
+
+
         private void showZoos()
         {
             try
@@ -45,10 +76,47 @@ namespace WPF_ZooManager
                     DataTable zooTable = new DataTable();
                     adapter.Fill(zooTable);
                     listZoos.DisplayMemberPath = "Location";
-                    listZoos.SelectedValuePath = "ID";
+                    listZoos.SelectedValuePath = "Id";
                     listZoos.ItemsSource = zooTable.DefaultView;
 
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        private void showAssociateAnimal()
+        {
+            try
+            {
+
+                string showAllDataInAnimal = "select * from Animal a inner join ZooAnimal za on a.id = za.AnimalID where za.ZooID =@Zoo_ID";
+                SqlCommand command = new SqlCommand(showAllDataInAnimal, conn);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                using (adapter)
+                {
+                    command.Parameters.AddWithValue("@Zoo_ID", listZoos.SelectedValue);
+                    DataTable AnimalTable = new DataTable();
+                    adapter.Fill(AnimalTable);
+                    ListassociatedAnimal.DisplayMemberPath = "Animal";
+                    ListassociatedAnimal.SelectedValue = "Id";
+                    ListassociatedAnimal.ItemsSource = AnimalTable.DefaultView;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+
+        private void listZoos_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                showAssociateAnimal();
             }
             catch (Exception ex)
             {
