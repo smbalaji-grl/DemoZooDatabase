@@ -46,7 +46,7 @@ namespace WPF_ZooManager
                     DataTable animalTable = new DataTable();
                     adapter.Fill(animalTable);
                     ListassociatedDisplayAnimal.DisplayMemberPath = "Animal";
-                    ListassociatedDisplayAnimal.SelectedValue = "Id";
+                    ListassociatedDisplayAnimal.SelectedValuePath = "Id";
                     ListassociatedDisplayAnimal.ItemsSource = animalTable.DefaultView;
                 }
 
@@ -79,7 +79,7 @@ namespace WPF_ZooManager
                 MessageBox.Show(ex.ToString());
             }
         }
-        private void showAssociateAnimal()
+        private void showAllAnimal()
         {
             try
             {
@@ -93,7 +93,7 @@ namespace WPF_ZooManager
                     DataTable AnimalTable = new DataTable();
                     adapter.Fill(AnimalTable);
                     ListassociatedAnimal.DisplayMemberPath = "Animal";
-                    ListassociatedAnimal.SelectedValue = "Id";
+                    ListassociatedAnimal.SelectedValuePath = "Id";
                     ListassociatedAnimal.ItemsSource = AnimalTable.DefaultView;
                 }
 
@@ -109,7 +109,7 @@ namespace WPF_ZooManager
         {
             try
             {
-                showAssociateAnimal();
+                showAllAnimal();
             }
             catch (Exception ex)
             {
@@ -135,6 +135,94 @@ namespace WPF_ZooManager
             {
                 conn.Close();
                 showZoos();
+            }
+        }
+
+        private void Addzoo_click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string AddZooOnClick = "Insert into Zoo values (@Location)";
+                SqlCommand command = new SqlCommand(AddZooOnClick, conn);
+                conn.Open();
+                command.Parameters.AddWithValue("@Location", textBoxZooName.Text);
+                command.ExecuteScalar();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                conn.Close();
+                showZoos();
+            }
+        }
+
+        private void ADD_animal_click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string addAnimal = "insert into ZooAnimal values (@ZooID,@AnimalID)";
+                SqlCommand command = new SqlCommand(addAnimal, conn);
+                conn.Open();
+                command.Parameters.AddWithValue("@AnimalID", ListassociatedDisplayAnimal.SelectedValue);
+                command.Parameters.AddWithValue("@ZooID", listZoos.SelectedValue);
+                command.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                conn.Close();
+                showAllAnimal();
+            }
+        }
+
+        private void delete_animal_inAnimalLIst(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string deleteAnimal = "delete from  Animal where Id=@Animal_Id";
+                SqlCommand sql_cmmd = new SqlCommand(deleteAnimal, conn);
+                conn.Open();
+                sql_cmmd.Parameters.AddWithValue("@Animal_Id", ListassociatedDisplayAnimal.SelectedValue);
+                sql_cmmd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                conn.Close();
+                showAllAnimal();
+                showAnimal();
+            }
+        }
+
+        private void AddAnimalInAnimalList(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string addAnimal = "Insert into Animal values (@animal_name)";
+                SqlCommand sql_commsnd = new SqlCommand(addAnimal, conn);
+                conn.Open();
+                sql_commsnd.Parameters.AddWithValue("@animal_name", textBoxZooName.Text);
+                sql_commsnd.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                conn.Close();
+                showAllAnimal();
+                showAnimal();
             }
         }
     }
