@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace WPF_ZooManager
 {
@@ -76,7 +77,7 @@ namespace WPF_ZooManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString());
+               // MessageBox.Show(ex.ToString());
             }
         }
         private void showAllAnimal()
@@ -110,6 +111,7 @@ namespace WPF_ZooManager
             try
             {
                 showAllAnimal();
+                showSelectedZooInTextBox();
             }
             catch (Exception ex)
             {
@@ -121,7 +123,7 @@ namespace WPF_ZooManager
         {
             try
             {
-                string deleteSpecificZoo = "delete  from Zoo where Id= @zoo_Id";
+                string deleteSpecificZoo = "delete from Zoo where Id= @zoo_Id";
                 SqlCommand command = new SqlCommand(deleteSpecificZoo, conn);
                 conn.Open();
                 command.Parameters.AddWithValue("@zoo_ID", listZoos.SelectedValue);
@@ -225,6 +227,101 @@ namespace WPF_ZooManager
                 showAnimal();
             }
         }
+
+        private void showSelectedZooInTextBox()
+        {
+            try
+            {
+                string showSelectedZoo = "select Location from Zoo where Id= @Zoo_ID";
+                SqlCommand sql_cmmd = new SqlCommand(showSelectedZoo, conn);
+                SqlDataAdapter sdptr = new SqlDataAdapter(sql_cmmd);
+                using (sdptr)
+                {
+                    sql_cmmd.Parameters.AddWithValue("@Zoo_ID", listZoos.SelectedValue);
+                    DataTable ZOOtable = new DataTable();
+                    sdptr.Fill(ZOOtable);
+                    textBoxZooName.Text = ZOOtable.Rows[0]["Location"].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void showSelectedAnimalList()
+        {
+            try
+            {
+                string showselectedAninal = "select Animal from Animal where Id = @animal_ID";
+                SqlCommand sql_ = new SqlCommand(showselectedAninal, conn);
+                SqlDataAdapter stadptr = new SqlDataAdapter(sql_);
+                using (stadptr)
+                {
+                    sql_.Parameters.AddWithValue("@animal_ID", ListassociatedDisplayAnimal.SelectedValue);
+                    DataTable animaltable = new DataTable();
+                    stadptr.Fill(animaltable);
+                    textBoxZooName.Text = animaltable.Rows[0]["Animal"].ToString();
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
+        }
+
+        private void ListassociatedDisplayAnimal_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            showSelectedAnimalList();
+        }
+
+        private void updateZoo_button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                String updateZooName = "Update Zoo set Location =@Location where Id= @Zoo_ID";
+                SqlCommand sql_cmmnd = new SqlCommand(updateZooName, conn);
+                conn.Open();
+                sql_cmmnd.Parameters.AddWithValue("@Zoo_ID", listZoos.SelectedValue);
+                sql_cmmnd.Parameters.AddWithValue("@Location", textBoxZooName.Text);
+                sql_cmmnd.ExecuteScalar();
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                showZoos();
+                conn.Close();
+
+            }
+        }
+        private void updateAnimal_button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                String updateZooName = "Update Animal set Animal =@Ani_mal where Id= @Animal_ID";
+                SqlCommand sql_cmmnd = new SqlCommand(updateZooName, conn);
+                conn.Open();
+                sql_cmmnd.Parameters.AddWithValue("@Ani_mal", textBoxZooName.Text);
+                sql_cmmnd.Parameters.AddWithValue("@Animal_ID", ListassociatedDisplayAnimal.SelectedValue);
+                sql_cmmnd.ExecuteScalar();
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            finally
+            {
+                showAnimal();
+                conn.Close();
+
+            }
+        }
+
+        
     }
 
 
